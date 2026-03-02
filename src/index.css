@@ -1,0 +1,133 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #1B2B21;
+  /* Deep Earthen Green */
+  --primary-light: #2A4032;
+  --accent-gold: #D4AF37;
+  /* Ancestral Gold */
+  --accent-terra: #B35C3B;
+  /* Terracotta Ember */
+  --cream: #F9F5F1;
+  /* Parchment Background */
+  --text-dark: #121212;
+  --glass: rgba(255, 255, 255, 0.7);
+  --glass-dark: rgba(27, 43, 33, 0.85);
+}
+
+@layer base {
+  body {
+    @apply bg-cream text-text-dark font-sans selection:bg-accent-gold/30 selection:text-primary;
+    background-image: radial-gradient(circle at 2px 2px, rgba(179, 92, 59, 0.03) 1px, transparent 0);
+    background-size: 32px 32px;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  .font-display {
+    @apply font-serif;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply backdrop-blur-md bg-white/70 border border-white/20 shadow-xl;
+  }
+
+  .glass-card-dark {
+    @apply backdrop-blur-lg bg-primary/80 border border-white/10 shadow-2xl;
+  }
+
+  .nav-link {
+    @apply relative overflow-hidden transition-all duration-300 hover:text-accent-gold;
+  }
+
+  .nav-link::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-0 h-0.5 bg-accent-gold transition-all duration-300;
+  }
+
+  .nav-link:hover::after {
+    @apply w-full;
+  }
+
+  .premium-shadow {
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1), 0 5px 15px rgba(0, 0, 0, 0.05);
+  }
+
+  .section-padding {
+    @apply py-24 px-4 sm:px-8 lg:px-16;
+  }
+
+  /* Animations */
+  .fade-up {
+    animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @keyframes fadeUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes gradient-flow {
+    0% {
+      background-position: 0% 50%;
+    }
+
+    50% {
+      background-position: 100% 50%;
+    }
+
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  @keyframes subtle-zoom {
+    0% {
+      transform: scale(1);
+    }
+
+    100% {
+      transform: scale(1.1);
+    }
+  }
+
+  .animate-gradient-flow {
+    animation: gradient-flow 6s ease infinite;
+  }
+
+  .animate-subtle-zoom {
+    animation: subtle-zoom 20s ease-in-out infinite alternate;
+  }
+
+  .fill-mode-forwards {
+    animation-fill-mode: forwards;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-cream;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-primary/20 rounded-full hover:bg-primary/40 transition-colors;
+}
