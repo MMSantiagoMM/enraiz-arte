@@ -9,7 +9,7 @@ RUN npm run build
 # production stage
 FROM nginx:stable-alpine as production-stage
 COPY --from=build-stage /app/dist /usr/share/nginx/html
-# Cloud Run needs to listen on $PORT, but we'll use a config that listens on 8080 and matches PORT if provided
+# Cloud Run needs to listen on $PORT, which defaults to 8080 if not set.
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-EXPOSE 8080
-CMD ["nginx", "-g", "daemon off;"]
+# Replace 8080 with actual $PORT at runtime for Cloud Run compatibility
+CMD sh -c "sed -i 's/8080/'\"${PORT:-8080}\"'/g' /etc/nginx/conf.d/default.conf && exec nginx -g 'daemon off;'"

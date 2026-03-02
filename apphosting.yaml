@@ -1,0 +1,20 @@
+kind: "AppHosting"
+schemaVersion: "v1"
+
+# Configuration for the build environment
+buildConfig:
+  # Vite build command
+  buildCommand: "npm run build"
+  
+# Configuration for the runtime environment (Cloud Run)
+runConfig:
+  # The path Cloud Run will use to check if your container is healthy
+  healthCheck:
+    path: "/"
+  
+  # Resource allocation for the server
+  cpu: 1
+  memoryMiB: 512
+
+  # The container will listen on $PORT provided by Firebase at runtime
+  # Our Dockerfile is now configured to handle this dynamically.
