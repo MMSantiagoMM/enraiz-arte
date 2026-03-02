@@ -59,6 +59,7 @@ export const translations = {
                 email: 'Correo Electrónico',
                 date: 'Fecha Deseada',
                 people: 'Número de Personas',
+                route: 'Ruta a Reservar',
                 submit: 'Enviar Solicitud de Reserva',
                 processing: 'Procesando...',
                 success: '¡Gracias! Tu reserva ha sido guardada. Nos pondremos en contacto contigo pronto.'
@@ -163,6 +164,7 @@ export const translations = {
                 email: 'Email Address',
                 date: 'Desired Date',
                 people: 'Number of People',
+                route: 'Route to Book',
                 submit: 'Send Booking Request',
                 processing: 'Processing...',
                 success: 'Thank you! Your booking has been saved. We will contact you soon.'

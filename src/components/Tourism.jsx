@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { MapPin, Calendar, Users, ArrowRight, X, Compass, Mountain, TreePine } from 'lucide-react';
+import { Calendar, Users, Compass, Mountain, TreePine } from 'lucide-react';
 import Card from './ui/Card';
 import Button from './ui/Button';
 import { addTourismBooking, getTourismContent } from '../services/db';
@@ -59,11 +59,15 @@ export default function Tourism() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!selectedRoute) {
+            alert(language === 'es' ? 'Por favor selecciona una ruta primero' : 'Please select a route first');
+            return;
+        }
         setStatus('loading');
         try {
             await addTourismBooking({
                 ...formData,
-                route: language === 'es' ? selectedRoute.title : selectedRoute.titleEn
+                route: language === 'es' ? selectedRoute.title : (selectedRoute.titleEn || selectedRoute.title)
             });
             setStatus('success');
             setFormData({ name: '', email: '', date: '', people: '' });
@@ -132,8 +136,8 @@ export default function Tourism() {
                                         onClick={() => {
                                             setSelectedRoute(route);
                                             setTimeout(() => {
-                                                document.getElementById('reserva-scroll')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                            }, 500);
+                                                document.getElementById('reservar')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                            }, 100);
                                         }}
                                     >
                                         <Compass size={20} className="group-hover/btn:rotate-90 transition-transform duration-500" />
@@ -145,112 +149,141 @@ export default function Tourism() {
                     ))}
                 </div>
 
-                {/* Reservation Experience Overlay (Dynamic Form) */}
-                {selectedRoute && (
-                    <div id="reserva-scroll" className="fixed inset-0 z-[100] bg-primary/95 backdrop-blur-2xl overflow-y-auto flex items-start lg:items-center justify-center p-4 sm:p-6 animate-fade-in">
-                        <div className="absolute top-0 right-0 p-6 sm:p-12 z-20">
-                            <button
-                                onClick={() => setSelectedRoute(null)}
-                                className="text-white/20 hover:text-accent-gold transition-all transform hover:rotate-90"
-                            >
-                                <X size={48} sm:size={64} strokeWidth={1} />
-                            </button>
-                        </div>
-
-                        <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center py-20 lg:py-0">
-                            <div className="hidden lg:block space-y-8 animate-fade-up">
-                                <div className="flex items-center gap-4">
-                                    <div className="h-[1px] w-12 bg-accent-gold"></div>
-                                    <span className="text-accent-gold font-black uppercase tracking-[0.4em] text-xs">Información de Reserva</span>
-                                </div>
-                                <h3 className="text-7xl font-serif font-black text-white leading-[0.9] uppercase italic tracking-tighter">
-                                    {language === 'es' ? selectedRoute.title : selectedRoute.titleEn}
-                                </h3>
-                                <p className="text-2xl text-white/40 font-serif italic max-w-lg leading-relaxed border-l-2 border-accent-terra/30 pl-8 py-4">
-                                    "{language === 'es' ? selectedRoute.description : (selectedRoute.descriptionEn || selectedRoute.description)}"
-                                </p>
-                                <div className="flex gap-12 pt-8">
-                                    <div className="space-y-2">
-                                        <TreePine className="text-accent-gold" />
-                                        <p className="text-[10px] uppercase font-black text-white/20 tracking-widest">Atrapante</p>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Mountain className="text-accent-gold" />
-                                        <p className="text-[10px] uppercase font-black text-white/20 tracking-widest">Natural</p>
-                                    </div>
-                                </div>
+                {/* Persistent Reservation Section */}
+                <div id="reservar" className="mt-32 pt-32 border-t border-primary/10">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
+                        {/* Information Side */}
+                        <div className="space-y-8 animate-fade-up">
+                            <div className="flex items-center gap-4">
+                                <div className="h-[1px] w-12 bg-accent-gold"></div>
+                                <span className="text-accent-gold font-black uppercase tracking-[0.4em] text-xs">
+                                    {selectedRoute ? t.tourism.formTitle : 'Planifica tu Experiencia'}
+                                </span>
                             </div>
 
-                            <div className="bg-white p-8 sm:p-12 lg:p-16 rounded-[2.5rem] sm:rounded-[4rem] shadow-4xl animate-fade-up [animation-delay:200ms] w-full">
-                                <div className="mb-10 lg:hidden">
-                                    <h3 className="text-4xl font-serif font-black text-primary mb-2 uppercase italic">
+                            {selectedRoute ? (
+                                <>
+                                    <h3 className="text-6xl md:text-7xl font-serif font-black text-primary leading-[0.9] uppercase italic tracking-tighter">
                                         {language === 'es' ? selectedRoute.title : selectedRoute.titleEn}
                                     </h3>
-                                    <p className="text-text-dark/40 font-bold text-xs uppercase tracking-widest">RESERVA TU EXPERIENCIA</p>
+                                    <p className="text-xl md:text-2xl text-text-dark/40 font-serif italic max-w-lg leading-relaxed border-l-2 border-accent-terra/30 pl-8 py-4">
+                                        "{language === 'es' ? selectedRoute.description : (selectedRoute.descriptionEn || selectedRoute.description)}"
+                                    </p>
+                                    <div className="flex gap-12 pt-8">
+                                        <div className="space-y-2">
+                                            <TreePine className="text-accent-gold" />
+                                            <p className="text-[10px] uppercase font-black text-text-dark/20 tracking-widest">Atrapante</p>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Mountain className="text-accent-gold" />
+                                            <p className="text-[10px] uppercase font-black text-text-dark/20 tracking-widest">Natural</p>
+                                        </div>
+                                    </div>
+                                </>
+                            ) : (
+                                <>
+                                    <h3 className="text-6xl md:text-7xl font-serif font-black text-primary leading-[0.9] uppercase italic tracking-tighter">
+                                        Reserva tu Ruta
+                                    </h3>
+                                    <p className="text-xl md:text-2xl text-text-dark/40 font-serif italic max-w-lg leading-relaxed">
+                                        Selecciona una de nuestras rutas comunitarias para comenzar tu viaje por nuestras raíces.
+                                    </p>
+                                </>
+                            )}
+                        </div>
+
+                        {/* Form Side */}
+                        <div className="bg-white p-8 sm:p-12 lg:p-16 rounded-[2.5rem] sm:rounded-[4rem] shadow-2xl border border-primary/5">
+                            <form onSubmit={handleSubmit} className="space-y-6 lg:space-y-8">
+                                <div className="space-y-2 lg:space-y-4">
+                                    <label className="text-[10px] lg:text-xs font-black text-text-dark/30 uppercase tracking-[0.3em] ml-2">
+                                        {t.tourism.form.route}
+                                    </label>
+                                    <select
+                                        required
+                                        className="w-full px-6 py-4 lg:px-8 lg:py-5 rounded-2xl lg:rounded-[2rem] bg-cream/40 border-2 border-transparent focus:border-accent-gold focus:outline-none transition-all font-serif text-lg lg:text-xl appearance-none cursor-pointer"
+                                        value={selectedRoute?.id || ''}
+                                        onChange={(e) => {
+                                            const route = routes.find(r => r.id === e.target.value);
+                                            setSelectedRoute(route);
+                                        }}
+                                    >
+                                        <option value="" disabled>{language === 'es' ? 'Selecciona una ruta' : 'Select a route'}</option>
+                                        {routes.map(r => (
+                                            <option key={r.id} value={r.id}>
+                                                {language === 'es' ? r.title : (r.titleEn || r.title)}
+                                            </option>
+                                        ))}
+                                    </select>
                                 </div>
 
-                                <form onSubmit={handleSubmit} className="space-y-6 lg:space-y-10">
+                                <div className="space-y-2 lg:space-y-4">
+                                    <label className="text-[10px] lg:text-xs font-black text-text-dark/30 uppercase tracking-[0.3em] ml-2">
+                                        {t.tourism.form.name}
+                                    </label>
+                                    <input
+                                        type="text"
+                                        required
+                                        className="w-full px-6 py-4 lg:px-8 lg:py-5 rounded-2xl lg:rounded-[2rem] bg-cream/40 border-2 border-transparent focus:border-accent-gold focus:outline-none transition-all font-serif text-lg lg:text-xl placeholder:text-text-dark/10"
+                                        value={formData.name}
+                                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                    />
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-2 lg:space-y-4">
-                                        <label className="text-[10px] lg:text-xs font-black text-text-dark/30 uppercase tracking-[0.3em] ml-2">
-                                            {t.tourism.form.name}
+                                        <label className="text-[10px] lg:text-xs font-black text-text-dark/30 uppercase tracking-[0.3em] ml-2 flex items-center gap-2">
+                                            <Calendar size={14} className="text-accent-gold" />
+                                            {t.tourism.form.date}
                                         </label>
                                         <input
-                                            type="text"
-                                            required
-                                            className="w-full px-6 py-4 lg:px-8 lg:py-5 rounded-2xl lg:rounded-[2rem] bg-cream/40 border-2 border-transparent focus:border-accent-gold focus:outline-none transition-all font-serif text-lg lg:text-xl placeholder:text-text-dark/10"
-                                            value={formData.name}
-                                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                        />
-                                    </div>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-10">
-                                        <div className="space-y-2 lg:space-y-4">
-                                            <label className="text-[10px] lg:text-xs font-black text-text-dark/30 uppercase tracking-[0.3em] ml-2 flex items-center gap-2">
-                                                <Calendar size={14} className="text-accent-gold" />
-                                                {t.tourism.form.date}
-                                            </label>
-                                            <input
-                                                type="date"
-                                                required
-                                                className="w-full px-6 py-4 lg:px-8 lg:py-5 rounded-2xl lg:rounded-[2rem] bg-cream/40 border-2 border-transparent focus:border-accent-gold focus:outline-none transition-all font-medium"
-                                                value={formData.date}
-                                                onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                                            />
-                                        </div>
-                                        <div className="space-y-2 lg:space-y-4">
-                                            <label className="text-[10px] lg:text-xs font-black text-text-dark/30 uppercase tracking-[0.3em] ml-2 flex items-center gap-2">
-                                                <Users size={14} className="text-accent-gold" />
-                                                {t.tourism.form.people}
-                                            </label>
-                                            <input
-                                                type="number"
-                                                min="1"
-                                                required
-                                                className="w-full px-6 py-4 lg:px-8 lg:py-5 rounded-2xl lg:rounded-[2rem] bg-cream/40 border-2 border-transparent focus:border-accent-gold focus:outline-none transition-all font-medium"
-                                                value={formData.people}
-                                                onChange={(e) => setFormData({ ...formData, people: e.target.value })}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="space-y-2 lg:space-y-4">
-                                        <label className="text-[10px] lg:text-xs font-black text-text-dark/30 uppercase tracking-[0.3em] ml-2">
-                                            {t.tourism.form.email}
-                                        </label>
-                                        <input
-                                            type="email"
+                                            type="date"
                                             required
                                             className="w-full px-6 py-4 lg:px-8 lg:py-5 rounded-2xl lg:rounded-[2rem] bg-cream/40 border-2 border-transparent focus:border-accent-gold focus:outline-none transition-all font-medium"
-                                            value={formData.email}
-                                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                            value={formData.date}
+                                            onChange={(e) => setFormData({ ...formData, date: e.target.value })}
                                         />
                                     </div>
-                                    <Button type="submit" variant="terra" className="w-full py-5 lg:py-6 text-lg lg:text-xl shadow-accent-terra/20" disabled={status === 'loading'}>
-                                        {status === 'loading' ? t.tourism.form.processing : t.tourism.form.submit}
-                                    </Button>
-                                </form>
-                            </div>
+                                    <div className="space-y-2 lg:space-y-4">
+                                        <label className="text-[10px] lg:text-xs font-black text-text-dark/30 uppercase tracking-[0.3em] ml-2 flex items-center gap-2">
+                                            <Users size={14} className="text-accent-gold" />
+                                            {t.tourism.form.people}
+                                        </label>
+                                        <input
+                                            type="number"
+                                            min="1"
+                                            required
+                                            className="w-full px-6 py-4 lg:px-8 lg:py-5 rounded-2xl lg:rounded-[2rem] bg-cream/40 border-2 border-transparent focus:border-accent-gold focus:outline-none transition-all font-medium"
+                                            value={formData.people}
+                                            onChange={(e) => setFormData({ ...formData, people: e.target.value })}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2 lg:space-y-4">
+                                    <label className="text-[10px] lg:text-xs font-black text-text-dark/30 uppercase tracking-[0.3em] ml-2">
+                                        {t.tourism.form.email}
+                                    </label>
+                                    <input
+                                        type="email"
+                                        required
+                                        className="w-full px-6 py-4 lg:px-8 lg:py-5 rounded-2xl lg:rounded-[2rem] bg-cream/40 border-2 border-transparent focus:border-accent-gold focus:outline-none transition-all font-medium"
+                                        value={formData.email}
+                                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                    />
+                                </div>
+
+                                <Button type="submit" variant="terra" className="w-full py-5 lg:py-6 text-lg lg:text-xl shadow-accent-terra/20" disabled={status === 'loading'}>
+                                    {status === 'loading' ? t.tourism.form.processing : t.tourism.form.submit}
+                                </Button>
+
+                                <p className="text-center text-[10px] uppercase font-bold text-text-dark/20 tracking-widest pt-4">
+                                    Garantizamos la seguridad de tus datos
+                                </p>
+                            </form>
                         </div>
                     </div>
-                )}
+                </div>
             </div>
         </section>
     );
