@@ -31,10 +31,6 @@ export default function Hero() {
                         <p className="text-xl md:text-3xl font-serif text-cream italic leading-relaxed max-w-2xl border-l-4 border-accent-terra pl-8 py-2">
                             "{t.hero.mission}"
                         </p>
-
-                        <p className="text-lg md:text-xl max-w-xl text-white/80 font-medium leading-relaxed">
-                            {t.hero.description}
-                        </p>
                     </div>
                 </div>
             </div>

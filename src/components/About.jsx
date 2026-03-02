@@ -16,7 +16,7 @@ export default function About() {
                 <header className="text-center mb-28 max-w-4xl mx-auto">
                     <div className="flex items-center justify-center gap-4 mb-6">
                         <div className="h-[1px] w-12 bg-accent-gold"></div>
-                        <Sparkles className="text-accent-gold" size={24} />
+                        <Leaf className="text-accent-gold" size={24} />
                         <div className="h-[1px] w-12 bg-accent-gold"></div>
                     </div>
                     <h2 className="text-6xl md:text-8xl font-serif font-black text-primary mb-8 tracking-tighter uppercase italic leading-none">
@@ -63,8 +63,8 @@ export default function About() {
                         <div className="lg:col-span-5 hidden lg:block sticky top-32">
                             <div className="relative rounded-[3rem] overflow-hidden group">
                                 <img
-                                    src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=2070"
-                                    alt="Comunidad"
+                                    src="/nosotros.jpg"
+                                    alt="Comunidad Enraiz-Arte"
                                     className="w-full h-[600px] object-cover transition-transform duration-1000 group-hover:scale-105"
                                 />
                                 <div className="absolute inset-0 bg-primary/20 mix-blend-multiply"></div>
